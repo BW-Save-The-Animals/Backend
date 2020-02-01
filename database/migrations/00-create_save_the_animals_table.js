@@ -59,7 +59,7 @@ exports.up = function(knex) {
 
         tbl.string("title", 20).notNullable();
         tbl.string("description", 200).notNullable();
-        tbl.integer("amounts", 12).notNullable();
+        tbl.integer("amount", 12).notNullable();
         tbl
           .integer("campaign_id", 12)
           .unsigned()
@@ -109,6 +109,7 @@ exports.up = function(knex) {
           .integer("campaign_id", 12)
           .unsigned()
           .notNullable()
+          .unique()
           .references("id")
           .inTable("campaigns")
           .onUpdate("CASCADE")
