@@ -9,7 +9,9 @@ exports.seed = async knex => {
         "We would like to purify the beach to give a better environment for turtles",
       urgency_level: 2,
       funding_goal: 120000,
-      specie_id: 6
+      specie_id: 6,
+      user_id: 2,
+      deadline: "04 / 11 / 20"
     },
     {
       id: 2,
@@ -20,7 +22,9 @@ exports.seed = async knex => {
         "The beach is full of plastic bottles poisoning the fishes, we would like to make a change here and clean the whole beach ",
       urgency_level: 1,
       funding_goal: 15000,
-      specie_id: 8
+      specie_id: 8,
+      user_id: 3,
+      deadline: "09 / 01 / 21"
     },
     {
       id: 3,
@@ -31,7 +35,9 @@ exports.seed = async knex => {
         "Here,our priority is creating a system to track elephants and protect them from poachers 24/7",
       urgency_level: 3,
       funding_goal: 1500000,
-      specie_id: 7
+      specie_id: 7,
+      user_id: 5,
+      deadline: "05 / 08 / 22"
     }
   ]);
 };

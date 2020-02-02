@@ -1,5 +1,5 @@
 exports.seed = async knex => {
-  await knex("rewards").insert([
+  await knex("perks").insert([
     {
       id: 1,
       campaign_id: 2,

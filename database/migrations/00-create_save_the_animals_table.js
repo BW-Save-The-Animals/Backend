@@ -30,6 +30,7 @@ exports.up = function(knex) {
         tbl.string("description", 200).notNullable();
         tbl.integer("urgency_level").notNullable();
         tbl.integer("funding_goal", 12).notNullable();
+        tbl.string("deadline", 10).notNullable();
 
         tbl
           .integer("specie_id", 12)
@@ -37,6 +38,15 @@ exports.up = function(knex) {
           .notNullable()
           .references("id")
           .inTable("species")
+          .onUpdate("CASCADE")
+          .onDelete("CASCADE");
+
+        tbl
+          .integer("user_id", 12)
+          .unsigned()
+          .notNullable()
+          .references("id")
+          .inTable("users")
           .onUpdate("CASCADE")
           .onDelete("CASCADE");
       })
@@ -52,9 +62,9 @@ exports.up = function(knex) {
           .unique();
       })
 
-      /////////////////////////////////// REWARDS
+      /////////////////////////////////// PERKS
 
-      .createTable("rewards", tbl => {
+      .createTable("perks", tbl => {
         tbl.increments();
 
         tbl.string("title", 20).notNullable();
@@ -84,17 +94,19 @@ exports.up = function(knex) {
           .onUpdate("CASCADE")
           .onDelete("CASCADE");
         tbl
-          .integer("reward_id", 12)
+          .integer("campaign_id", 12)
           .unsigned()
           .notNullable()
           .references("id")
-          .inTable("rewards")
+          .inTable("campaign")
           .onUpdate("CASCADE")
           .onDelete("CASCADE");
+
+        tbl.integer("donation_amount", 12).notNullable();
       })
       /////////////////////////////////// users_campaigns
 
-      .createTable("users_campaigns", tbl => {
+      .createTable("users_perks", tbl => {
         tbl.increments();
 
         tbl
@@ -106,12 +118,12 @@ exports.up = function(knex) {
           .onUpdate("CASCADE")
           .onDelete("CASCADE");
         tbl
-          .integer("campaign_id", 12)
+          .integer("perk_id", 12)
           .unsigned()
           .notNullable()
           .unique()
           .references("id")
-          .inTable("campaigns")
+          .inTable("perks")
           .onUpdate("CASCADE")
           .onDelete("CASCADE");
       })
@@ -120,9 +132,9 @@ exports.up = function(knex) {
 
 exports.down = function(knex, Promise) {
   return knex.schema
-    .dropTableIfExists("users_campaigns")
+    .dropTableIfExists("users_perks")
     .dropTableIfExists("donations")
-    .dropTableIfExists("rewards")
+    .dropTableIfExists("perks")
     .dropTableIfExists("species")
     .dropTableIfExists("campaigns")
     .dropTableIfExists("users");
