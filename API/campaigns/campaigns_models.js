@@ -4,6 +4,10 @@ function get() {
   return db("campaigns");
 }
 
+function getUserCampaigns(id) {
+  return db("campaigns").where({ user_id: id });
+}
+
 function getById(id) {
   return db("campaigns")
     .where({ id })
@@ -28,5 +32,6 @@ module.exports = {
   get,
   getById,
   insert,
-  update
+  update,
+  getUserCampaigns
 };
