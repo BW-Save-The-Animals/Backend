@@ -35,7 +35,7 @@ server.use(
   })
 );
 server.use("/api/auth/", authRouter);
-server.use("/api/users", usersRouter);
+server.use("/api/users", protected, usersRouter);
 server.use("/api/campaigns", protected, campaignsRouter);
 var moment = require("moment");
 moment().format();
