@@ -2,6 +2,10 @@ const express = require("express");
 const helmet = require("helmet");
 const session = require("express-session");
 const KnexSessionStore = require("connect-session-knex")(session);
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+const { version, description } = require('./package.json')   //used in swagger options
+
 const server = express();
 
 const usersRouter = require("./API/users/users_routers");
@@ -34,11 +38,31 @@ server.use(
     })
   })
 );
+
+const swaggerDefinition = {
+  info: {
+    title: "Save The Animals",
+    version,
+    description
+  },
+  host: "localhost:5600",
+  baseUrl: '/'
+};
+
+const options = {
+  swaggerDefinition,
+  apis:  ['./API/*.js']
+};
+
+const swaggerSpec = swaggerJsDoc(options);
+
 server.use("/api/auth/", authRouter);
 server.use("/api/users", usersRouter);
 server.use("/api/campaigns", protected, campaignsRouter);
 var moment = require("moment");
 moment().format();
+
+server.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 function logger(req, res, next) {
   console.log(
