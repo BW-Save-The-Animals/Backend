@@ -11,7 +11,7 @@ exports.seed = async knex => {
       funding_goal: 120000,
       specie_id: 6,
       user_id: 2,
-      deadline: "04 / 11 / 20"
+      deadline: "04/11/20"
     },
     {
       id: 2,
@@ -24,7 +24,7 @@ exports.seed = async knex => {
       funding_goal: 15000,
       specie_id: 8,
       user_id: 3,
-      deadline: "09 / 01 / 21"
+      deadline: "09/01/21"
     },
     {
       id: 3,
@@ -37,7 +37,7 @@ exports.seed = async knex => {
       funding_goal: 1500000,
       specie_id: 7,
       user_id: 5,
-      deadline: "05 / 08 / 22"
+      deadline: "05/08/22"
     }
   ]);
 };

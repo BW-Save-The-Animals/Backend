@@ -3,6 +3,7 @@ exports.up = function(knex) {
     knex.schema
 
       //////////////////////////////////// USERS
+
       .createTable("users", tbl => {
         tbl.increments();
 
@@ -98,7 +99,7 @@ exports.up = function(knex) {
           .unsigned()
           .notNullable()
           .references("id")
-          .inTable("campaign")
+          .inTable("campaigns")
           .onUpdate("CASCADE")
           .onDelete("CASCADE");
 
