@@ -46,7 +46,7 @@ const swaggerDefinition = {
     description
   },
   host: "localhost:5600",
-  baseUrl: '/'
+  baseUrl: '/api'
 };
 
 const options = {

@@ -3,6 +3,50 @@ const bcrypt = require("bcryptjs");
 const Users = require("../users/users_models");
 const { validateUser } = require("../validation");
 
+/**
+ * @swagger
+ * /auth/register:
+ *  post:
+ *    summary: Create a new user account
+ *    description: Create a new user account
+ *    tags: [Auth]
+ *    consumes:
+ *      - application/json
+ *    parameters:
+ *      - in: body
+ *        name: user
+ *        description: The user to create
+ *        schema:
+ *          type: object
+ *          required:
+ *            - name
+ *            - email
+ *            - password
+ *            - user_type
+ *            - about
+ *          properties:
+ *            name:
+ *              type: string
+ *            email:
+ *              type: string
+ *            password:
+ *              type: string
+ *            about:
+ *              type: string
+ *            user_type:
+ *              type: integer
+ *    responses:
+ *      201:
+ *        description: returns the newly-created user
+ *        schema:
+ *          $ref: '#/definitions/User'
+ *      400:
+ *        description: returned if any of `email`, `name`, `password`, `user_type`, or `about` are
+ *                     missing or of incorrect data type.
+ *      500:
+ *        description: returned in the event of a server error
+ */
+
 router.post("/register", validateUser, (req, res) => {
   req.body.password = bcrypt.hashSync(req.body.password, 10);
 
@@ -31,8 +75,8 @@ router.post("/login", (req, res) => {
         req.session.loggedInUser = user;
         res.status(200).json({ message: "Logged in" });
       } else {
-        res.status(200).json({
-          message: "You shall not pass!"
+        res.status(401).json({
+          message: "Invalid username or password"
         });
       }
     })
