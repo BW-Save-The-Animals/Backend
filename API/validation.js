@@ -70,7 +70,8 @@ function validateCampaign(req, res, next) {
     campaignData.urgency_level &&
     campaignData.funding_goal &&
     campaignData.deadline &&
-    campaignData.specie_id
+    campaignData.specie_id &&
+    campaignData.location
   ) {
     if (
       RegExp(/^[a-zA-Z ]{3,30}$/).test(campaignData.title) &&
@@ -96,8 +97,7 @@ function validateCampaign(req, res, next) {
         campaignData.description.length <= 200,
         RegExp(/^\d{1}$/).test(campaignData.urgency_level),
         RegExp(/^\d{1,10}$/).test(campaignData.funding_goal),
-        RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/).test,
-        campaignData.deadline,
+        RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/).test(campaignData.deadline),
         RegExp(/^\d{1}$/).test(campaignData.specie_id)
       );
     }
@@ -126,7 +126,7 @@ function validateCampaignId(req, res, next) {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: "error" });
+      res.status(500).json({ message: "Unexpected server error" });
     });
 }
 
