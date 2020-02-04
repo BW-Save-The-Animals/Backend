@@ -4,13 +4,13 @@ const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  Campaigns.get(req.query)
+  Campaigns.get()
     .then(users => {
       res.status(200).json(users);
     })
     .catch(error => {
       res.status(500).json({
-        message: error
+        message: "Unexpected server error"
       });
     });
 });
@@ -28,7 +28,7 @@ router.post("/", validateCampaign, (req, res) => {
       res.status(200).json(newCampaign);
     })
     .catch(err =>
-      res.status(400).json({ message: "missing some campaign data" })
+      res.status(500).json({ message: "Unexpected server error" })
     );
 });
 
@@ -37,9 +37,12 @@ router.put("/:id", validateCampaignId, validateCampaign, (req, res) => {
   const changes = req.body;
 
   Campaigns.update(changes, id)
-    .then(updatedCampaign => {
-      res.json(updatedCampaign);
-    })
+    .then(data => {
+        Campaigns.getById(id)
+          .then(updatedCampaign => { 
+            res.status(200).json(updatedCampaign);
+          })
+      })
     .catch(err => {
       res.status(500).json({ message: "Failed to update campaign" });
     });
