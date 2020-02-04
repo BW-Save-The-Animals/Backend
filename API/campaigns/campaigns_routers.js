@@ -48,4 +48,15 @@ router.put("/:id", validateCampaignId, validateCampaign, (req, res) => {
     });
 });
 
+router.delete("/:id", validateCampaignId, (req, res) => {
+  const { id } = req.params;
+  Campaigns.remove(id)
+    .then(campaign => {
+      res.status(202).json(campaign);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Something went wrong" });
+    });
+});
+
 module.exports = router;
