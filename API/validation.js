@@ -112,7 +112,7 @@ function validateCampaignId(req, res, next) {
   if (RegExp(/^\d+$/).test(id) !== true) {
     res
       .status(500)
-      .json({ message: "Invalid campaign ID,it should be an integer" });
+      .json({ message: "Invalid campaign ID, it should be an integer" });
     return true;
   }
 
