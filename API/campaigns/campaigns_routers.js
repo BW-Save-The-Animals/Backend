@@ -4,7 +4,9 @@ const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  Campaigns.get()
+  let { title, specie_id, location } = req.body;
+
+  Campaigns.get(req.query)
     .then(users => {
       res.status(200).json(users);
     })
@@ -12,6 +14,7 @@ router.get("/", (req, res) => {
       res.status(500).json({
         message: "Unexpected server error"
       });
+      console.log(error);
     });
 });
 
@@ -45,6 +48,17 @@ router.put("/:id", validateCampaignId, validateCampaign, (req, res) => {
       })
     .catch(err => {
       res.status(500).json({ message: "Failed to update campaign" });
+    });
+});
+
+router.delete("/:id", validateCampaignId, (req, res) => {
+  const { id } = req.params;
+  Campaigns.remove(id)
+    .then(campaign => {
+      res.status(202).json(campaign);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Something went wrong" });
     });
 });
 
