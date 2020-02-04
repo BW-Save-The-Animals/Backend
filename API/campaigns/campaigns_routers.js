@@ -4,6 +4,8 @@ const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {
+  let { title, specie_id, location } = req.body;
+
   Campaigns.get(req.query)
     .then(users => {
       res.status(200).json(users);
@@ -12,6 +14,7 @@ router.get("/", (req, res) => {
       res.status(500).json({
         message: error
       });
+      console.log(error);
     });
 });
 
