@@ -21,6 +21,7 @@ router.get("/:id", validateCampaignId, (req, res) => {
 
 router.post("/", validateCampaign, (req, res) => {
   const campaignData = req.body;
+  campaignData.user_id = req.session.loggedInUser.id;
 
   Campaigns.insert(campaignData)
     .then(newCampaign => {
