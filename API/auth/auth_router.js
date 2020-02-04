@@ -14,6 +14,7 @@ router.post("/register", validateUser, (req, res) => {
     about: req.body.about
   })
     .then(saved => {
+      delete saved.password;
       res.status(201).json(saved);
     })
     .catch(error => {
