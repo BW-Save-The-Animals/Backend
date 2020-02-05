@@ -130,6 +130,22 @@ function validateCampaignId(req, res, next) {
     });
 }
 
+function validateEmail(req, res, next) {
+  const newUser = req.body;
+
+  Users.getByEmail({ email: newUser.email })
+    .then(data => {
+      if (!data) {        //checks if email exists. Next, if not.
+        next();
+      } else {
+        throw new Error("User with email already exists");
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: err.message });
+    });
+}
+
 /////////////////////////////// AUTH MIDDLEWARE
 
 function protected(req, res, next) {
@@ -145,5 +161,6 @@ module.exports = {
   validateUser,
   validateCampaignId,
   validateCampaign,
+  validateEmail,
   protected
 };

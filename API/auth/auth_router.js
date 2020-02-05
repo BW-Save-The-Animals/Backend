@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const Users = require("../users/users_models");
-const { validateUser } = require("../validation");
+const { validateUser, validateEmail } = require("../validation");
 
 /**
  * @swagger
@@ -47,7 +47,7 @@ const { validateUser } = require("../validation");
  *        description: returned in the event of a server error
  */
 
-router.post("/register", validateUser, (req, res) => {
+router.post("/register", validateUser, validateEmail, (req, res) => {
   req.body.password = bcrypt.hashSync(req.body.password, 10);
 
   Users.insert({
