@@ -24,9 +24,14 @@ function insert(user) {
     });
 }
 
+function getByCampaign_Id(id) {
+  return db("campaigns").where({ user_id: id });
+}
+
 module.exports = {
   get,
   getById,
   insert,
-  getByEmail
+  getByEmail,
+  getByCampaign_Id
 };

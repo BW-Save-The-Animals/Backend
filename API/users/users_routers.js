@@ -32,7 +32,13 @@ router.get("/campaigns", (req, res) => {
 });
 
 router.get("/:id", validateUserId, (req, res) => {
-  res.status(200).json(req.user);
+  Users.getByCampaign_Id(req.user.id)
+    .then(camp => {
+      res.status(200).json({ ...req.user, camp });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "something went wrong" });
+    });
 });
 
 module.exports = router;
