@@ -36,7 +36,7 @@ exports.seed = async knex => {
       urgency_level: 3,
       funding_goal: 1500000,
       specie_id: 7,
-      user_id: 5,
+      user_id: 4,
       deadline: "05/08/22"
     }
   ]);

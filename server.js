@@ -13,7 +13,7 @@ const usersRouter = require("./API/users/users_routers");
 const campaignsRouter = require("./API/campaigns/campaigns_routers");
 const authRouter = require("./API/auth/auth_router");
 const speciesRouter = require("./API/species/species_routers");
-const { protected } = require("./API/validation");
+const { restricted } = require("./API/validation");
 
 server.use(express.json());
 server.use(helmet());
@@ -60,8 +60,8 @@ const options = {
 const swaggerSpec = swaggerJsDoc(options);
 
 server.use("/api/auth/", authRouter);
-server.use("/api/users", protected, usersRouter);
-server.use("/api/campaigns", protected, campaignsRouter);
+server.use("/api/users", restricted, usersRouter);
+server.use("/api/campaigns", restricted, campaignsRouter);
 server.use("/api/species", speciesRouter);
 
 var moment = require("moment");
