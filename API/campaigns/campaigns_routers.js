@@ -1,5 +1,6 @@
 const express = require("express");
 const Campaigns = require("./campaigns_models");
+const Donations = require("../donations/donations_models");
 const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
@@ -60,6 +61,28 @@ router.delete("/:id", validateCampaignId, (req, res) => {
     .catch(err => {
       res.status(500).json({ message: "Something went wrong" });
     });
+});
+
+router.post("/:id/donate", validateCampaignId, (req, res) => {
+
+  //check campaign date before inserting a donation?
+  
+  Donations.insert({
+    user_id: req.session.loggedInUser.id,
+    campaign_id: req.campaign.id,
+    donation_amount: req.body.donation_amount
+  })
+    .then(result => {
+      res.status(202).json({
+        message: "Success! You donated to a campaign"
+      });
+    })
+    .catch(err => {
+      console.log(err);
+      
+      res.status(500).json({ message: "Failed to insert donation" });
+    });
+
 });
 
 module.exports = router;
