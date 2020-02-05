@@ -1,6 +1,7 @@
 const express = require("express");
 const Campaigns = require("./campaigns_models");
 const Donations = require("../donations/donations_models");
+const Perks = require("../perks/perks_models");
 const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
@@ -20,7 +21,14 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", validateCampaignId, (req, res) => {
-  res.status(200).json(req.campaign);
+  // res.status(200).json(req.campaign);
+  Perks.getByCampaign_Id(req.campaign.id)
+    .then(perks => {
+      res.status(200).json({ ...req.campaign, perks });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "something went wrong" });
+    });
 });
 
 router.post("/", validateCampaign, (req, res) => {
@@ -31,9 +39,7 @@ router.post("/", validateCampaign, (req, res) => {
     .then(newCampaign => {
       res.status(200).json(newCampaign);
     })
-    .catch(err =>
-      res.status(500).json({ message: "Unexpected server error" })
-    );
+    .catch(err => res.status(500).json({ message: "Unexpected server error" }));
 });
 
 router.put("/:id", validateCampaignId, validateCampaign, (req, res) => {
@@ -42,11 +48,10 @@ router.put("/:id", validateCampaignId, validateCampaign, (req, res) => {
 
   Campaigns.update(changes, id)
     .then(data => {
-        Campaigns.getById(id)
-          .then(updatedCampaign => { 
-            res.status(200).json(updatedCampaign);
-          })
-      })
+      Campaigns.getById(id).then(updatedCampaign => {
+        res.status(200).json(updatedCampaign);
+      });
+    })
     .catch(err => {
       res.status(500).json({ message: "Failed to update campaign" });
     });
@@ -64,9 +69,8 @@ router.delete("/:id", validateCampaignId, (req, res) => {
 });
 
 router.post("/:id/donate", validateCampaignId, (req, res) => {
-
   //check campaign date before inserting a donation?
-  
+
   Donations.insert({
     user_id: req.session.loggedInUser.id,
     campaign_id: req.campaign.id,
@@ -79,10 +83,24 @@ router.post("/:id/donate", validateCampaignId, (req, res) => {
     })
     .catch(err => {
       console.log(err);
-      
+
       res.status(500).json({ message: "Failed to insert donation" });
     });
+});
 
+router.post("/:id/perks", validateCampaignId, (req, res) => {
+  const perksData = req.body;
+
+  Perks.insert({
+    title: perksData.title,
+    description: perksData.description,
+    amount: perksData.amount,
+    campaign_id: req.campaign.id
+  })
+    .then(newCampaign => {
+      res.status(200).json(newCampaign);
+    })
+    .catch(err => res.status(500).json({ message: "Unexpected server error" }));
 });
 
 module.exports = router;
