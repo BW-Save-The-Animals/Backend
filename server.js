@@ -2,10 +2,10 @@ const express = require("express");
 const helmet = require("helmet");
 const session = require("express-session");
 const KnexSessionStore = require("connect-session-knex")(session);
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require("swagger-ui-express");
+const swaggerJsDoc = require("swagger-jsdoc");
 const cors = require("cors");
-const { version, description } = require('./package.json')   //used in swagger options
+const { version, description } = require("./package.json"); //used in swagger options
 
 const server = express();
 
@@ -49,12 +49,12 @@ const swaggerDefinition = {
     description
   },
   host: "localhost:5600",
-  baseUrl: '/api'
+  baseUrl: "/api"
 };
 
 const options = {
   swaggerDefinition,
-  apis:  ['./API/*.js']
+  apis: ["./API/*.js"]
 };
 
 const swaggerSpec = swaggerJsDoc(options);
