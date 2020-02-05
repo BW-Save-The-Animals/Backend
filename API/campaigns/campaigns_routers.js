@@ -61,7 +61,7 @@ router.delete("/:id", validateCampaignId, (req, res) => {
   const { id } = req.params;
   Campaigns.remove(id)
     .then(campaign => {
-      res.status(202).json(campaign);
+      res.status(202).json({ message: `Campaign with id ${id} deleted.` });
     })
     .catch(err => {
       res.status(500).json({ message: "Something went wrong" });
@@ -70,15 +70,16 @@ router.delete("/:id", validateCampaignId, (req, res) => {
 
 router.post("/:id/donate", validateCampaignId, (req, res) => {
   //check campaign date before inserting a donation?
+  const { donation_amount } = req.body;
 
   Donations.insert({
     user_id: req.session.loggedInUser.id,
     campaign_id: req.campaign.id,
-    donation_amount: req.body.donation_amount
+    donation_amount
   })
     .then(result => {
       res.status(202).json({
-        message: "Success! You donated to a campaign"
+        message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
       });
     })
     .catch(err => {
