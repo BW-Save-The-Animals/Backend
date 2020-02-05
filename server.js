@@ -4,6 +4,7 @@ const session = require("express-session");
 const KnexSessionStore = require("connect-session-knex")(session);
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const cors = require("cors");
 const { version, description } = require('./package.json')   //used in swagger options
 
 const server = express();
@@ -17,6 +18,7 @@ const { protected } = require("./API/validation");
 server.use(express.json());
 server.use(helmet());
 server.use(logger);
+server.use(cors());
 
 server.use(
   session({
