@@ -148,7 +148,7 @@ function validateEmail(req, res, next) {
 
 /////////////////////////////// AUTH MIDDLEWARE
 
-function protected(req, res, next) {
+function restricted(req, res, next) {
   if (req.session.loggedInUser) {
     next();
   } else {
@@ -162,5 +162,5 @@ module.exports = {
   validateCampaignId,
   validateCampaign,
   validateEmail,
-  protected
+  restricted
 };

@@ -1,54 +1,65 @@
-// const server = require("../api/server");
-// const request = require("supertest");
+const server = require("../../server");
+const request = require("supertest");
 
-// describe("users routes", () => {
-// 	it("should had environment var correctly set", () => {
-// 		expect(process.env.DB_ENV).toBe("testing");
-// 	});
+jest.useFakeTimers();
 
-// 	it("should return a register", () => {
-// 		return request(server)
-// 			.post("/api/auth/register")
-// 			.send({
-// 				username: "random" + new Date().getTime(),
-// 				password: "12345"
-// 			})
-// 			.set("Content-Type", "application/json")
-// 			.set("Accept", "application/json")
-// 			.then(result => {
-// 				expect(result.status).toBe(201);
-// 				expect(result.header["content-type"]).toMatch(/json/);
-// 			});
-// 	});
-// 	it("should return a token", () => {
-// 		return request(server)
-// 			.post("/api/auth/login")
-// 			.send({
-// 				username: "abc",
-// 				password: "12345"
-// 			})
-// 			.set("Content-Type", "application/json")
-// 			.set("Accept", "application/json")
-// 			.then(result => {
-// 				expect(result.body.token.length).toBeGreaterThan(50);
-// 				expect(result.status).toBe(200);
-// 			});
-// 	});
-// 	it("should get jokes", async () => {
-// 		const login = await request(server)
-// 			.post("/api/auth/login")
-// 			.send({
-// 				username: "abc",
-// 				password: "12345"
-// 			})
-// 			.set("Content-Type", "application/json");
+describe("users routes", () => {
+	it("should have environment var correctly set", () => {
+		expect(process.env.DB_ENV).toBe("testing");
+	});
 
-// 		const jokes = await request(server)
-// 			.get("/api/jokes")
-// 			.set("Content-Type", "application/json")
-// 			.set("Authorization", login.body.token);
+	let cookie = "";
 
-// 		expect(jokes.body.length).toBe(20);
-// 		expect(jokes.body[0].id).toBe("0189hNRf2g");
-// 	});
-// });
+	it("should register user and return it back a register", done => {
+		request(server)
+			.post("/api/auth/register")
+			.send({
+				email: "random" + new Date().getTime() + "@gmail.com",
+				password: "012345678912",
+				name: "Random",
+				user_type: 1,
+				about: "this is a example about statement"
+			})
+			.set("Content-Type", "application/json")
+			.set("Accept", "application/json")
+			.then(result => {
+				expect(result.status).toBe(201);
+				expect(result.header["content-type"]).toMatch(/json/);
+				expect(result.body.name).toMatch(/Random/);
+				done();
+			});
+	});
+
+	it("should return a cookie", done => {
+		request(server)
+			.post("/api/auth/login")
+			.send({
+				email: "rodrigograca31@gmail.com",
+				password: "12345"
+			})
+			.set("Content-Type", "application/json")
+			.set("Accept", "application/json")
+			.then(result => {
+				cookie = result.header["set-cookie"][0];
+				// console.log(cookie);
+				expect(result.status).toBe(200);
+				expect(cookie).toContain("session_cookie");
+				expect(cookie.length).toBeGreaterThan(50);
+
+				done();
+			});
+	});
+
+	it("should get campaigns", done => {
+		request(server)
+			.get("/api/users/campaigns")
+
+			.set("Cookie", cookie)
+			.set("Content-Type", "application/json")
+			.then(result => {
+				expect(result.body).toBeInstanceOf(Array);
+				expect(result.body.length).toBe(1);
+				done();
+			});
+	});
+});
