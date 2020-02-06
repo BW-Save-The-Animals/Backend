@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/campaigns", (req, res) => {
-  const { id } = req.session.loggedInUser;
+  const { id } = req.decodedToken.user;
   console.log(id);
   Campaigns.getUserCampaigns(id)
     .then(campaigns => {

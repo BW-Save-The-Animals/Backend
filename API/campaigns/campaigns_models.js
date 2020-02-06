@@ -75,11 +75,52 @@ function remove(id) {
     .del();
 }
 
+// RAW SQL
+
+/*SELECT users_perks.user_id,SUM(perks.amount),
+users_perks.perk_id,
+perks.amount,perks.title,
+perks.campaign_id
+from users_perks
+JOIN perks
+ON users_perks.perk_id=perks.id
+group by perks.campaign_id*/
+
+function total_Perks_Per_Campaign(id) {
+  return db("perk_id", "perks.amount", "perks.title", "perks.campaign_id")
+    .sum("perks.amount as total_Perks_amount")
+    .select()
+    .from("users_perks")
+    .join("perks", "users_perks.perk_id", "=", "perks.id")
+    .groupBy("perks.campaign_id")
+    .where({ campaign_id: id })
+    .first();
+}
+
+// RAW SQL
+// select donations.campaign_id,
+// donations.donation_amount,
+// sum(donations.donation_amount)
+// from donations
+// group by donations.campaign_id
+
+function total_Donations_Per_Campaigns(id) {
+  return db("donations.campaign_id", "donations.donation_amount")
+    .sum("donations.donation_amount as total_Donation_amount")
+    .select()
+    .from("donations")
+    .groupBy("donations.campaign_id")
+    .where({ campaign_id: id })
+    .first();
+}
+
 module.exports = {
   get,
   getById,
   insert,
   update,
   getUserCampaigns,
-  remove
+  remove,
+  total_Perks_Per_Campaign,
+  total_Donations_Per_Campaigns
 };

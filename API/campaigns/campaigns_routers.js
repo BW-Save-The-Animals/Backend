@@ -6,8 +6,6 @@ const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  let { title, specie_id, location } = req.body;
-
   Campaigns.get(req.query)
     .then(users => {
       res.status(200).json(users);
@@ -21,10 +19,29 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", validateCampaignId, (req, res) => {
-  // res.status(200).json(req.campaign);
   Perks.getByCampaign_Id(req.campaign.id)
     .then(perks => {
-      res.status(200).json({ ...req.campaign, perks });
+      Campaigns.total_Perks_Per_Campaign(req.campaign.id).then(
+        PerksCampTotal => {
+          Campaigns.total_Donations_Per_Campaigns(req.campaign.id).then(
+            donatedCampTotal => {
+              var sum = Object.values(
+                donatedCampTotal ? donatedCampTotal : [0]
+              ).map(function(num, idx) {
+                return (
+                  num +
+                  Object.values(PerksCampTotal ? PerksCampTotal : [0])[idx]
+                );
+              });
+              res.status(200).json({
+                ...req.campaign,
+                perks,
+                total_Amount_Received_For_This_Campaign: sum[0]
+              });
+            }
+          );
+        }
+      );
     })
     .catch(err => {
       res.status(500).json({ message: "something went wrong" });
@@ -33,7 +50,7 @@ router.get("/:id", validateCampaignId, (req, res) => {
 
 router.post("/", validateCampaign, (req, res) => {
   const campaignData = req.body;
-  campaignData.user_id = req.session.loggedInUser.id;
+  campaignData.user_id = req.decodedToken.user.id;
 
   Campaigns.insert(campaignData)
     .then(newCampaign => {
@@ -73,20 +90,20 @@ router.post("/:id/donate", validateCampaignId, (req, res) => {
   const { donation_amount } = req.body;
 
   Donations.insert({
-    user_id: req.session.loggedInUser.id,
-    campaign_id: req.campaign.id,
-    donation_amount
+		user_id: req.decodedToken.user.id,
+		campaign_id: req.campaign.id,
+		donation_amount
   })
-    .then(result => {
-      res.status(202).json({
-        message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
-      });
-    })
-    .catch(err => {
-      console.log(err);
+		.then(result => {
+			res.status(202).json({
+				message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
+			});
+		})
+		.catch(err => {
+			console.log(err);
 
-      res.status(500).json({ message: "Failed to insert donation" });
-    });
+			res.status(500).json({ message: "Failed to insert donation" });
+		});
 });
 
 router.post("/:id/perks", validateCampaignId, (req, res) => {

@@ -5,6 +5,8 @@ const KnexSessionStore = require("connect-session-knex")(session);
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const { version, description } = require("./package.json"); //used in swagger options
 
 const server = express();
@@ -18,28 +20,41 @@ const { restricted } = require("./API/validation");
 server.use(express.json());
 server.use(helmet());
 server.use(logger);
-server.use(cors());
+
+
+// server.use(
+//   session({
+//     name: "session_cookie",
+//     secret: "secret key to encrypt",
+//     cookie: {
+//       maxAge: 1000 * 60 * 60,
+//       secure: false, // https only?
+//       httpOnly: false // can we get it from JS?
+//     },
+
+//     resave: false,
+//     saveUninitialized: true, // gdpr
+//     store: new KnexSessionStore({
+//       knex: require("./database/db_config.js"), // configured instance of knex
+//       tablename: "sessions", // table that will store sessions inside the db, name it anything you want
+//       sidfieldname: "sid", // column that will hold the session id, name it anything you want
+//       createtable: true, // if the table does not exist, it will create it automatically
+//       clearInterval: 1000 * 60 // time it takes to check for old sessions and remove them from the database to keep it clean and fast
+//     })
+//   })
+// );
+
+server.use(cookieParser())
 
 server.use(
-  session({
-    name: "session_cookie",
-    secret: "secret key to encrypt",
-    cookie: {
-      maxAge: 1000 * 60 * 60,
-      secure: false, // https only?
-      httpOnly: false // can we get it from JS?
-    },
-
-    resave: false,
-    saveUninitialized: true, // gdpr
-    store: new KnexSessionStore({
-      knex: require("./database/db_config.js"), // configured instance of knex
-      tablename: "sessions", // table that will store sessions inside the db, name it anything you want
-      sidfieldname: "sid", // column that will hold the session id, name it anything you want
-      createtable: true, // if the table does not exist, it will create it automatically
-      clearInterval: 1000 * 60 // time it takes to check for old sessions and remove them from the database to keep it clean and fast
-    })
-  })
+	cors({
+		credentials: true,
+		origin: [
+			"http://localhost:5000",
+			"http://localhost:3000",
+			"http://silky-playground.surge.sh"
+		]
+	})
 );
 
 const swaggerDefinition = {
