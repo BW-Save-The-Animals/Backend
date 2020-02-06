@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 exports.seed = async knex => {
   await knex("users").insert([
     {
-      id: 1,
       email: "animallover@google.com",
       password: bcrypt.hashSync("super_secret", 14),
       name: "Tom",
@@ -13,7 +12,6 @@ exports.seed = async knex => {
         "I have always loved animals and would like to contribute to saving them"
     },
     {
-      id: 2,
       email: "world@zoo.com",
       password: bcrypt.hashSync("pass", 14),
       name: "Jake",
@@ -22,7 +20,6 @@ exports.seed = async knex => {
         "As an owner of a zoo,I would like to raise funds to take in some endangered animals"
     },
     {
-      id: 3,
       email: "animal@fans.com",
       password: bcrypt.hashSync("safety", 14),
       name: "Richard",
@@ -30,7 +27,6 @@ exports.seed = async knex => {
       about: "I have a few pets,I would like to contribute to this cause"
     },
     {
-      id: 4,
       email: "rodrigograca31@gmail.com",
       password: bcrypt.hashSync("12345", 14),
       name: "Rodrigo",
@@ -38,7 +34,6 @@ exports.seed = async knex => {
       about: "Cat-man"
     },
     {
-      id: 5,
       email: "mail@worldwildlife.org",
       password: bcrypt.hashSync("spy", 14),
       name: "Michael",
@@ -47,7 +42,6 @@ exports.seed = async knex => {
         "WWF - World Wild Life is here to raise money to save various animals"
     },
     {
-      id: 6,
       email: "sea@world.com",
       password: bcrypt.hashSync("sea", 14),
       name: "Dana",
