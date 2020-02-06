@@ -18,7 +18,7 @@ const { restricted } = require("./API/validation");
 server.use(express.json());
 server.use(helmet());
 server.use(logger);
-server.use(cors());
+server.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
 server.use(
   session({
