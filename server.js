@@ -5,6 +5,8 @@ const KnexSessionStore = require("connect-session-knex")(session);
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const cors = require("cors");
+// const cookieParser = require("cookie-parser");
+// const cookieParser = require("jwt");
 const { version, description } = require("./package.json"); //used in swagger options
 
 const server = express();
@@ -42,7 +44,17 @@ server.use(
   })
 );
 
-server.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+// server.use(cookieParser())
+
+server.use(
+	cors({
+		credentials: true,
+		origin: [
+			"http://localhost:3000",
+			"http://silky-playground.surge.sh"
+		]
+	})
+);
 
 const swaggerDefinition = {
   info: {
