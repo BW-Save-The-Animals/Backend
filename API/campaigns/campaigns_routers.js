@@ -6,8 +6,6 @@ const { validateCampaignId, validateCampaign } = require("../validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  let { title, specie_id, location } = req.body;
-
   Campaigns.get(req.query)
     .then(users => {
       res.status(200).json(users);
@@ -21,12 +19,29 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id", validateCampaignId, (req, res) => {
-  // res.status(200).json(req.campaign);
   Perks.getByCampaign_Id(req.campaign.id)
     .then(perks => {
-      res
-        .status(200)
-        .json({ ...req.campaign, perks, total_amount_donated: "3400" });
+      Campaigns.total_Perks_Per_Campaign(req.campaign.id).then(
+        PerksCampTotal => {
+          Campaigns.total_Donations_Per_Campaigns(req.campaign.id).then(
+            donatedCampTotal => {
+              var sum = Object.values(
+                donatedCampTotal ? donatedCampTotal : [0]
+              ).map(function(num, idx) {
+                return (
+                  num +
+                  Object.values(PerksCampTotal ? PerksCampTotal : [0])[idx]
+                );
+              });
+              res.status(200).json({
+                ...req.campaign,
+                perks,
+                total_Amount_Received_For_This_Campaign: sum[0]
+              });
+            }
+          );
+        }
+      );
     })
     .catch(err => {
       res.status(500).json({ message: "something went wrong" });
