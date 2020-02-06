@@ -1,7 +1,6 @@
 exports.seed = async knex => {
   await knex("campaigns").insert([
     {
-      id: 1,
       title: "Save the Turtles",
       photo: "https://i.imgur.com/sLc8FWD.png",
       location: "Galapagos",
@@ -14,7 +13,6 @@ exports.seed = async knex => {
       deadline: "04/11/20"
     },
     {
-      id: 2,
       title: "Remove all the plastic bottles",
       photo: "https://i.imgur.com/18ALpDG.jpg",
       location: "Australia",
@@ -27,7 +25,6 @@ exports.seed = async knex => {
       deadline: "09/01/21"
     },
     {
-      id: 3,
       title: "Protect the Elephants",
       photo: "https://i.imgur.com/2A5Bv2m.jpg",
       location: "Kenya",
