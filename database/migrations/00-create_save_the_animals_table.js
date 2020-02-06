@@ -17,7 +17,7 @@ exports.up = function(knex) {
         tbl.integer("user_type", 1).notNullable();
         tbl.string("about", 200).notNullable();
       })
-      
+
       //////////////////////////////////// SPECIES
 
       .createTable("species", tbl => {
@@ -63,7 +63,6 @@ exports.up = function(knex) {
           .onDelete("CASCADE");
       })
 
-
       /////////////////////////////////// PERKS
 
       .createTable("perks", tbl => {
@@ -106,7 +105,7 @@ exports.up = function(knex) {
 
         tbl.integer("donation_amount", 12).notNullable();
       })
-      /////////////////////////////////// users_campaigns
+      /////////////////////////////////// users_perks
 
       .createTable("users_perks", tbl => {
         tbl.increments();
@@ -123,7 +122,7 @@ exports.up = function(knex) {
           .integer("perk_id", 12)
           .unsigned()
           .notNullable()
-          .unique()
+
           .references("id")
           .inTable("perks")
           .onUpdate("CASCADE")

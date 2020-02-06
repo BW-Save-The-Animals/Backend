@@ -136,7 +136,8 @@ function validateEmail(req, res, next) {
 
   Users.getByEmail({ email: newUser.email })
     .then(data => {
-      if (!data) {        //checks if email exists. Next, if not.
+      if (!data) {
+        //checks if email exists. Next, if not.
         next();
       } else {
         throw new Error("User with email already exists");
@@ -150,28 +151,81 @@ function validateEmail(req, res, next) {
 /////////////////////////////// AUTH MIDDLEWARE
 
 function restricted(req, res, next) {
-
   const token = req.cookies.token;
   console.log(token);
-  
+
   if (!token) {
-		// if (req.session.loggedInUser) {
-      return res.status(401).json({ message: "You shall not pass!" });
+    // if (req.session.loggedInUser) {
+    return res.status(401).json({ message: "You shall not pass!" });
   }
   jwt.verify(
-		token,
-		process.env.JWT_SECRET || "thesecret",
-		// callback (err, decodedToken)
-		(err, decoded) => {
-			if (err) {
-				res.status(401).json({ message: "token bad" });
-			} else {
-				// let's put the decoded token on req
-				req.decodedToken = decoded;
-			}
-		}
+    token,
+    process.env.JWT_SECRET || "thesecret",
+    // callback (err, decodedToken)
+    (err, decoded) => {
+      if (err) {
+        res.status(401).json({ message: "token bad" });
+      } else {
+        // let's put the decoded token on req
+        req.decodedToken = decoded;
+      }
+    }
   );
   next();
+}
+
+//////////////////////////////////////  DONATIONS
+
+function validateDonation(req, res, next) {
+  const donationData = req.body;
+
+  if (donationData && donationData.donation_amount) {
+    if (RegExp(/^\d{1,12}$/).test(donationData.donation_amount)) {
+      next();
+    } else {
+      res.status(400).json({ message: "wrong donation data" });
+    }
+  } else {
+    res.status(400).json({ message: "missing donation data" });
+  }
+}
+
+///////////////////////////////////////////   PERKS
+
+function validatePerk(req, res, next) {
+  const perkData = req.body;
+
+  if (perkData && perkData.title && perkData.description && perkData.amount) {
+    if (
+      RegExp(/^[a-zA-Z ]{3,20}$/).test(perkData.title) &&
+      RegExp(/^[a-zA-Z ]{3,30}$/).test(perkData.description) &&
+      perkData.description.length >= 10 &&
+      perkData.description.length <= 200 &&
+      RegExp(/^\d{1,12}$/).test(perkData.amount)
+    ) {
+      next();
+    } else {
+      res.status(400).json({ message: "wrong perk data" });
+    }
+  } else {
+    res.status(400).json({ message: "missing perk data" });
+  }
+}
+
+///////////////////////////////////////////
+
+function validateBoughtPerk(req, res, next) {
+  const boughtPerkData = req.body;
+
+  if (boughtPerkData && boughtPerkData.perk_id) {
+    if (RegExp(/^\d{1,12}$/).test(boughtPerkData.perk_id)) {
+      next();
+    } else {
+      res.status(400).json({ message: "wrong bought perk data" });
+    }
+  } else {
+    res.status(400).json({ message: "missing perk data" });
+  }
 }
 
 module.exports = {
@@ -180,5 +234,8 @@ module.exports = {
   validateCampaignId,
   validateCampaign,
   validateEmail,
-  restricted
+  restricted,
+  validateDonation,
+  validatePerk,
+  validateBoughtPerk
 };
