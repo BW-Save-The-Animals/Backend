@@ -10,7 +10,7 @@ function getById(id) {
 
 function insert(donation) {
 	return db(TABLE)
-		.insert(donation)
+		.insert(donation, "id")
 		.then(ids => {
 			return getById(ids[0]);
 		});
