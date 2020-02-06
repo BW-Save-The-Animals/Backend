@@ -137,6 +137,6 @@ exports.down = function(knex, Promise) {
     .dropTableIfExists("donations")
     .dropTableIfExists("perks")
     .dropTableIfExists("campaigns")
-    .dropTableIfExists("users")
     .dropTableIfExists("species")
+    .dropTableIfExists("users")
 };
