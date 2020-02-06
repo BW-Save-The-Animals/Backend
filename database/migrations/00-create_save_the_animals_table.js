@@ -17,6 +17,17 @@ exports.up = function(knex) {
         tbl.integer("user_type", 1).notNullable();
         tbl.string("about", 200).notNullable();
       })
+      
+      //////////////////////////////////// SPECIES
+
+      .createTable("species", tbl => {
+        tbl.increments();
+
+        tbl
+          .string("specie_name", 20)
+          .notNullable()
+          .unique();
+      })
 
       //////////////////////////////////// CAMPAIGNS
 
@@ -52,16 +63,6 @@ exports.up = function(knex) {
           .onDelete("CASCADE");
       })
 
-      //////////////////////////////////// SPECIES
-
-      .createTable("species", tbl => {
-        tbl.increments();
-
-        tbl
-          .string("specie_name", 20)
-          .notNullable()
-          .unique();
-      })
 
       /////////////////////////////////// PERKS
 
