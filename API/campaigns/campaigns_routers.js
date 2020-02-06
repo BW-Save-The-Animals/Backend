@@ -24,7 +24,9 @@ router.get("/:id", validateCampaignId, (req, res) => {
   // res.status(200).json(req.campaign);
   Perks.getByCampaign_Id(req.campaign.id)
     .then(perks => {
-      res.status(200).json({ ...req.campaign, perks });
+      res
+        .status(200)
+        .json({ ...req.campaign, perks, total_amount_donated: "3400" });
     })
     .catch(err => {
       res.status(500).json({ message: "something went wrong" });
