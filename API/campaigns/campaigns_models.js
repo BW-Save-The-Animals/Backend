@@ -75,6 +75,37 @@ function remove(id) {
     .del();
 }
 
+function total_Perks_Per_Campaign(id) {
+  
+}
+
+
+function total_Donations_Per_Campaigns(params) {
+  
+}
+
+
+/*SELECT users_perks.user_id,SUM(perks.amount),
+users_perks.perk_id,
+perks.amount,perks.title,
+perks.campaign_id
+from users_perks
+JOIN perks
+ON users_perks.perk_id=perks.id
+group by perks.campaign_id*/
+
+// select donations.campaign_id,
+// donations.donation_amount,
+// sum(donations.donation_amount)
+// from donations
+// group by donations.campaign_id
+
+
+
+
+
+
+
 module.exports = {
   get,
   getById,
