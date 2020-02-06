@@ -2,7 +2,13 @@ const express = require("express");
 const Campaigns = require("./campaigns_models");
 const Donations = require("../donations/donations_models");
 const Perks = require("../perks/perks_models");
-const { validateCampaignId, validateCampaign } = require("../validation");
+const {
+  validateCampaignId,
+  validateCampaign,
+  validateDonation,
+  validatePerk,
+  validateBoughtPerk
+} = require("../validation");
 const router = express.Router();
 
 router.get("/", (req, res) => {
@@ -85,28 +91,30 @@ router.delete("/:id", validateCampaignId, (req, res) => {
     });
 });
 
-router.post("/:id/donate", validateCampaignId, (req, res) => {
+router.post("/:id/donate", validateCampaignId, validateDonation, (req, res) => {
   //check campaign date before inserting a donation?
   const { donation_amount } = req.body;
 
   Donations.insert({
-		user_id: req.decodedToken.user.id,
-		campaign_id: req.campaign.id,
-		donation_amount
+    user_id: req.decodedToken.user.id,
+    campaign_id: req.campaign.id,
+    donation_amount
   })
-		.then(result => {
-			res.status(202).json({
-				message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
-			});
-		})
-		.catch(err => {
-			console.log(err);
+    .then(result => {
+      res.status(202).json({
+        message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
+      });
+    })
+    .catch(err => {
+      console.log(err);
 
-			res.status(500).json({ message: "Failed to insert donation" });
-		});
+      res.status(500).json({ message: "Failed to insert donation" });
+    });
 });
 
-router.post("/:id/perks", validateCampaignId, (req, res) => {
+/////////////////////////////////////// TO CREATE A PERK
+
+router.post("/:id/perks", validateCampaignId, validatePerk, (req, res) => {
   const perksData = req.body;
 
   Perks.insert({
@@ -120,5 +128,29 @@ router.post("/:id/perks", validateCampaignId, (req, res) => {
     })
     .catch(err => res.status(500).json({ message: "Unexpected server error" }));
 });
+
+///////////////////////////////////// TO BUY A PERK
+
+router.post(
+  "/:id/buy_perks",
+  validateCampaignId,
+  validateBoughtPerk,
+  (req, res) => {
+    const SelectedPerksData = req.body;
+
+    Perks.buyPerk({
+      user_id: req.decodedToken.user.id,
+      perk_id: SelectedPerksData.perk_id
+    })
+      .then(newBoughtPerk => {
+        res.status(200).json(newBoughtPerk);
+        console.log(newBoughtPerk)
+      })
+      .catch(err => {
+        res.status(500).json({ message: "Unexpected server error" });
+        console.log(err);
+      });
+  }
+);
 
 module.exports = router;
