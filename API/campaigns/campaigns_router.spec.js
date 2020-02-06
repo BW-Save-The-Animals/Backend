@@ -9,6 +9,8 @@ describe("campaign endpoints", () => {
   });
 
   let cookie = "";
+  let n = 20;  //used for testing delete endpoint
+
 
   it("should set cookie", done => {
     request(server)
@@ -42,7 +44,7 @@ describe("campaign endpoints", () => {
 
   it("should get campaigns by id", () => {
     return request(server)
-      .get("/api/campaigns/1")
+      .get("/api/campaigns/2")
       .set("Cookie", cookie)
       .set("Content-Type", "application/json")
       .then(res => {
@@ -53,10 +55,10 @@ describe("campaign endpoints", () => {
   }, 30000);
 
   it("adds new campaign correctly", () => {
-    //the mule variable is used to add random letters to the data, 
+    //the mule variable is used to add random letters to the data,
     //ensuring continuous running of test.
-    
-    const mule = "gr" + ranger.charAt(Math.floor(Math.random() * 26)) + "rg";    
+
+    const mule = ranger.charAt(Math.floor(Math.random() * 26)) + "gr" + ranger.charAt(Math.floor(Math.random() * 26)) + "rg";
 
     return request(server)
       .post("/api/campaigns")
@@ -74,7 +76,7 @@ describe("campaign endpoints", () => {
       .set("Content-Type", "application/json")
       .set("Accept", "application/json")
       .then(response => {
-        // console.log(response.body);
+        console.log(response.body);
         // console.log("mule", mule);
         // console.log(cookie);
         expect(response.status).toBe(200);
@@ -106,4 +108,18 @@ describe("campaign endpoints", () => {
       });
   });
 
+  it("should delete campaigns", () => {
+    return request(server)
+      .delete(`/api/campaigns/${n}`)
+      .set("Cookie", cookie)
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .then(response => {
+        console.log(n);
+        n++;
+        console.log(response.body);
+        expect(response.status).toBe(202);
+        expect(response.body.message).toMatch(/deleted/);
+      });
+  }, 3000);
 });
