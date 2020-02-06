@@ -35,7 +35,7 @@ router.get("/:id", validateCampaignId, (req, res) => {
 
 router.post("/", validateCampaign, (req, res) => {
   const campaignData = req.body;
-  campaignData.user_id = req.session.loggedInUser.id;
+  campaignData.user_id = req.decodedToken.user.id;
 
   Campaigns.insert(campaignData)
     .then(newCampaign => {
@@ -75,20 +75,20 @@ router.post("/:id/donate", validateCampaignId, (req, res) => {
   const { donation_amount } = req.body;
 
   Donations.insert({
-    user_id: req.session.loggedInUser.id,
-    campaign_id: req.campaign.id,
-    donation_amount
+		user_id: req.decodedToken.user.id,
+		campaign_id: req.campaign.id,
+		donation_amount
   })
-    .then(result => {
-      res.status(202).json({
-        message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
-      });
-    })
-    .catch(err => {
-      console.log(err);
+		.then(result => {
+			res.status(202).json({
+				message: `Success! You donated ${donation_amount} to the '${req.campaign.title}' campaign`
+			});
+		})
+		.catch(err => {
+			console.log(err);
 
-      res.status(500).json({ message: "Failed to insert donation" });
-    });
+			res.status(500).json({ message: "Failed to insert donation" });
+		});
 });
 
 router.post("/:id/perks", validateCampaignId, (req, res) => {
