@@ -127,4 +127,21 @@ describe("campaign endpoints", () => {
         expect(response.body.message).toMatch(/deleted/);
       });
   }, 30000);
+
+  it("should donate to a campaign", () => {
+    return request(server)
+      .post("/api/campaigns/1/donate")
+      .send({
+        "donation_amount": 5700
+      })
+      .set("Cookie", cookie)
+      .set("Content-Type", "application/json")
+      .set("Accept", "application/json")
+      .then(response => {
+        console.log(response.body);
+        expect(response.status).toBe(202);
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body.message).toMatch(/Success!/);
+      })
+  });
 });
