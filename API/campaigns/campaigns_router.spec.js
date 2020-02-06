@@ -1,16 +1,28 @@
 const server = require("../../server");
 const request = require("supertest");
+const knex = require("../../database/db_config");
 
-const ranger = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+jest.setTimeout(65000);
+
+beforeAll(async function() {
+  let res = await knex.migrate
+    .rollback()
+    .then(function() {
+      return knex.migrate.latest();
+    })
+    .then(function() {
+      return knex.seed.run();
+    });
+
+  return res;
+});
 
 describe("campaign endpoints", () => {
   it("should have the right environment", () => {
     expect(process.env.DB_ENV).toBe("testing");
-  });
+  }, 30000);
 
   let cookie = "";
-  let n = 20;  //used for testing delete endpoint
-
 
   it("should set cookie", done => {
     request(server)
@@ -55,16 +67,11 @@ describe("campaign endpoints", () => {
   }, 30000);
 
   it("adds new campaign correctly", () => {
-    //the mule variable is used to add random letters to the data,
-    //ensuring continuous running of test.
-
-    const mule = ranger.charAt(Math.floor(Math.random() * 26)) + "gr" + ranger.charAt(Math.floor(Math.random() * 26)) + "rg";
-
     return request(server)
       .post("/api/campaigns")
       .send({
-        title: `This is a ${mule}`,
-        photo: `https://goog.com/b${mule}y`,
+        title: "Hoi pocip",
+        photo: "https://goog.com/ba",
         description: "I really don't know",
         urgency_level: "1",
         funding_goal: "23",
@@ -76,7 +83,7 @@ describe("campaign endpoints", () => {
       .set("Content-Type", "application/json")
       .set("Accept", "application/json")
       .then(response => {
-        console.log(response.body);
+        // console.log(response.body);
         // console.log("mule", mule);
         // console.log(cookie);
         expect(response.status).toBe(200);
@@ -87,7 +94,7 @@ describe("campaign endpoints", () => {
 
   it("makes changes to campaign correctly", () => {
     return request(server)
-      .put("/api/campaigns/9")
+      .put("/api/campaigns/2")
       .send({
         title: "Ask me agaifn but sure",
         photo: "https://goog.com/lobg",
@@ -110,16 +117,14 @@ describe("campaign endpoints", () => {
 
   it("should delete campaigns", () => {
     return request(server)
-      .delete(`/api/campaigns/${n}`)
+      .delete(`/api/campaigns/3`)
       .set("Cookie", cookie)
       .set("Content-Type", "application/json")
       .set("Accept", "application/json")
       .then(response => {
-        console.log(n);
-        n++;
-        console.log(response.body);
+        // console.log(response.body);
         expect(response.status).toBe(202);
         expect(response.body.message).toMatch(/deleted/);
       });
-  }, 3000);
+  }, 30000);
 });
