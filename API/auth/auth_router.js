@@ -1,7 +1,33 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const Users = require("../users/users_models");
+const jwt = require("jsonwebtoken");
 const { validateUser, validateEmail } = require("../validation");
+
+function makeToken(user, res) {
+  // make a "payload" object
+ 
+	const payload = {
+		sub: user.id,
+		user: user
+	};
+	// make an "options" object (exp)
+	const options = {
+		expiresIn: "1d"
+	};
+	// use the lib to make the token
+	const token = jwt.sign(
+		payload,
+		process.env.JWT_SECRET || "thesecret",
+		options
+  );
+  return res.cookie("token", token, {
+		expiresIn: 1000 * 60 * 60,
+		httpOnly: true,
+		secure: false
+  });
+	// return token;
+}
 
 /**
  * @swagger
@@ -72,7 +98,8 @@ router.post("/login", (req, res) => {
     .then(user => {
       // console.log("found", user);
       if (user && bcrypt.compareSync(req.body.password, user.password)) {
-        req.session.loggedInUser = user;
+        //  req.decodedToken.user = user;
+        makeToken(user, res)
         res.status(200).json({
           message: "Logged in",
           id: user.id,
@@ -85,12 +112,14 @@ router.post("/login", (req, res) => {
       }
     })
     .catch(error => {
+      console.log(error);
+      
       res.status(500).json({ message: "Failed to login" });
     });
 });
 
 router.get("/logout", (req, res) => {
-  req.session.destroy();
+  // req.session.destroy();
   res.status(200).json({ message: "bye bye" });
 });
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const Users = require("./users/users_models");
 const Campaigns = require("./campaigns/campaigns_models");
+const jwt = require("jsonwebtoken");
 
 ////////////////////////////////////////////   USERS
 
@@ -149,11 +150,28 @@ function validateEmail(req, res, next) {
 /////////////////////////////// AUTH MIDDLEWARE
 
 function restricted(req, res, next) {
-  if (req.session.loggedInUser) {
-    next();
-  } else {
-    res.status(401).json({ message: "You shall not pass!" });
+
+  const token = req.cookies.token;
+  console.log(token);
+  
+  if (!token) {
+		// if (req.session.loggedInUser) {
+      return res.status(401).json({ message: "You shall not pass!" });
   }
+  jwt.verify(
+		token,
+		process.env.JWT_SECRET || "thesecret",
+		// callback (err, decodedToken)
+		(err, decoded) => {
+			if (err) {
+				res.status(401).json({ message: "token bad" });
+			} else {
+				// let's put the decoded token on req
+				req.decodedToken = decoded;
+			}
+		}
+  );
+  next();
 }
 
 module.exports = {
