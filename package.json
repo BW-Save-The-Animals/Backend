@@ -10,7 +10,7 @@
     "pretest": "npm run rollback && npm run migrate && npm run seed",
     "migrate": "heroku run knex migrate:latest --app save-the-animalss",
     "rollback": "heroku knex migrate:rollback --app save-the-animalss",
-    "seed": "heroku knex seed:run --env production --app save-the-animalss"
+    "seed": "heroku knex seed:run --app save-the-animalss"
   },
   "repository": {
     "type": "git",
