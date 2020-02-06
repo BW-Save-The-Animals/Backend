@@ -18,8 +18,18 @@ exports.up = function(knex) {
         tbl.string("about", 200).notNullable();
       })
 
-      //////////////////////////////////// CAMPAIGNS
+      //////////////////////////////////// SPECIES
 
+      .createTable("species", tbl => {
+        tbl.increments();
+
+        tbl
+          .string("specie_name", 20)
+          .notNullable()
+          .unique();
+      })
+      //////////////////////////////////// CAMPAIGNS
+      
       .createTable("campaigns", tbl => {
         tbl.increments();
         tbl
@@ -52,16 +62,6 @@ exports.up = function(knex) {
           .onDelete("CASCADE");
       })
 
-      //////////////////////////////////// SPECIES
-
-      .createTable("species", tbl => {
-        tbl.increments();
-
-        tbl
-          .string("specie_name", 20)
-          .notNullable()
-          .unique();
-      })
 
       /////////////////////////////////// PERKS
 
