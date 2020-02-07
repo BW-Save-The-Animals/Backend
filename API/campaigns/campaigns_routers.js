@@ -35,8 +35,10 @@ router.get("/:id", validateCampaignId, (req, res) => {
                 donatedCampTotal ? donatedCampTotal : [0]
               ).map(function(num, idx) {
                 return (
-                  num +
-                  Object.values(PerksCampTotal ? PerksCampTotal : [0])[idx]
+                  parseInt(num) +
+                  parseInt(
+                    Object.values(PerksCampTotal ? PerksCampTotal : [0])[idx]
+                  )
                 );
               });
               res.status(200).json({
@@ -144,7 +146,7 @@ router.post(
     })
       .then(newBoughtPerk => {
         res.status(200).json(newBoughtPerk);
-        console.log(newBoughtPerk)
+        console.log(newBoughtPerk);
       })
       .catch(err => {
         res.status(500).json({ message: "Unexpected server error" });
