@@ -8,17 +8,17 @@ function getById(id) {
 
 function insert(perk) {
   return db("perks")
-    .insert(perk)
-    .then(ids => {
-      return getById(ids[0]);
-    });
+		.insert(perk, "id")
+		.then(ids => {
+			return getById(ids[0]);
+		});
 }
 function buyPerk(perk) {
   return db("users_perks")
-    .insert(perk)
-    .then(ids => {
-      return getById(ids[0]);
-    });
+		.insert(perk, "id")
+		.then(ids => {
+			return getById(ids[0]);
+		});
 }
 
 function getByCampaign_Id(id) {

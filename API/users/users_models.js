@@ -18,10 +18,10 @@ function getByEmail(filter) {
 
 function insert(user) {
   return db("users")
-    .insert(user)
-    .then(ids => {
-      return getById(ids[0]);
-    });
+		.insert(user, "id")
+		.then(ids => {
+			return getById(ids[0]);
+		});
 }
 
 function getByCampaign_Id(id) {

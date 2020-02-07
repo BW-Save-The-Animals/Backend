@@ -57,7 +57,7 @@ function getById(id) {
 
 function insert(campaign) {
   return db("campaigns")
-    .insert(campaign)
+    .insert(campaign, "id")
     .then(ids => {
       return getById(ids[0]);
     });
